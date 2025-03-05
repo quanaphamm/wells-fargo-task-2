@@ -1,17 +1,29 @@
 package com.wellsfargo.counselor.entity;
 
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
+@Table(name = "ADVISOR")
 public class Advisor {
 
     @Id
-    @GeneratedValue()
-    private long advisorId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "advisor_id")  // Ensure column name matches database
+    private Long advisorId;
+
+    @Column(nullable = false, unique = true)
+    private String username;
+
+    @Column(nullable = false)
+    private String passwordHash;
+
+    @Column(nullable = false)
+    private String role; // 'ADVISOR' or 'ADMIN'
+
+    @Column(nullable = false, unique = true)
+    private String email;
 
     @Column(nullable = false)
     private String firstName;
@@ -20,67 +32,55 @@ public class Advisor {
     private String lastName;
 
     @Column(nullable = false)
-    private String address;
+    private String phoneNumber;
 
-    @Column(nullable = false)
-    private String phone;
+    @Column(nullable = false, updatable = false)
+    private Timestamp createdAt;
 
-    @Column(nullable = false)
-    private String email;
+    @OneToMany(mappedBy = "advisor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Client> clients;
 
-    protected Advisor() {
+    // Default Constructor
+    public Advisor() {}
 
-    }
-
-    public Advisor(String firstName, String lastName, String address, String phone, String email) {
+    // Parameterized Constructor
+    public Advisor(String username, String passwordHash, String role, String email, String firstName, String lastName, String phoneNumber, Timestamp createdAt) {
+        this.username = username;
+        this.passwordHash = passwordHash;
+        this.role = role;
+        this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.address = address;
-        this.phone = phone;
-        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.createdAt = createdAt;
     }
 
-    public Long getAdvisorId() {
-        return advisorId;
-    }
+    // Getters and Setters
+    public Long getAdvisorId() { return advisorId; }
 
-    public String getFirstName() {
-        return firstName;
-    }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+    public String getPasswordHash() { return passwordHash; }
+    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
 
-    public String getLastName() {
-        return lastName;
-    }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getAddress() {
-        return address;
-    }
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
 
-    public String getPhone() {
-        return phone;
-    }
+    public String getPhoneNumber() { return phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
+    public Timestamp getCreatedAt() { return createdAt; }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public List<Client> getClients() { return clients; }
+    public void setClients(List<Client> clients) { this.clients = clients; }
 }
